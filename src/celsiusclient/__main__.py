@@ -1,6 +1,6 @@
 import board
 import adafruit_dht
-from time import sleep
+from time import sleep, time
 import socketio
 
 from celsiusclient.settings import HOST
@@ -10,6 +10,7 @@ dht_device = adafruit_dht.DHT22(board.D12)
 sio = socketio.Client()
 sio.connect(HOST)
 print("[press ctrl+c to end the script]")
+last_update = 0
 try: # Main program loop
     while True:
         try:
@@ -22,7 +23,10 @@ try: # Main program loop
         if humidity is not None and temperature is not None:
             print("Temp={0:0.1f}*C  Humidity={1:0.1f}%"
                               .format(temperature, humidity))
-            sio.emit('data', {'temperature': temperature, 'humidity': humidity})
+            now = time()
+            if now - last_update > 60:
+                sio.emit('data', {'temperature': temperature, 'humidity': humidity})
+                last_update = now
         else:
             print("Failed to get reading. Try again!")
 # Scavenging work after the end of the program
