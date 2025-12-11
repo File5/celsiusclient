@@ -20,7 +20,7 @@ try: # Main program loop
             print("Error")
             continue
         sleep(2.5)
-        if humidity is not None and temperature is not None:
+        if humidity is not None and temperature is not None and 0 <= temperature <= 50:
             print("Temp={0:0.1f}*C  Humidity={1:0.1f}%"
                               .format(temperature, humidity))
             now = time()
